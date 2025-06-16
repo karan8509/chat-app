@@ -1,32 +1,52 @@
-const User = require("../Models/User-Model")
+const User = require("../Models/User-Model");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log("name , email  , password  ", name, email, password);
+    console.log(" name , email  , password ", name, email, password);
+
+    const genretToken = (userID) => {
+      const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
+        expiresIn: "3d",
+      });
+      return { Refrenshtoken };
+    };
+
+    const cookieStoreData = (res, refreshToken) => {
+      res.cookie("token", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Strict",
+        maxAge: 2 * 24 * 60 * 60 * 1000,
+      });
+    };
 
     // Check if email already exists in the database
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({
+      return res.json({
         message: "Email already exists",
         success: false,
       });
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
-
     const user = await User.create({ name, email, password: hashPassword });
-
-    res.status(201).json({
+    const { Refrenshtoken } = genretToken(user);
+    cookieStoreData(res, Refrenshtoken);
+    res.json({
       message: "Successfully Account Created",
-      user,
       success: true,
+      user,
     });
   } catch (error) {
-    console.error("Error in Signup Route:", error.message); 
-    res.status(500).json({
-      message: "Internal server error. Please try again later.",
+    console.error("Error in Signup Route:", error.message);
+    res.json({
+      message:
+        "Internal server error. Please try again later." || error.message,
       success: false,
     });
   }
@@ -35,31 +55,29 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const existEmail = await User.findOne({ email });
     if (!existEmail) {
-      return res.status(404).json({
+      return res.json({
         message: "Email not found",
         success: false,
       });
     }
-
     const comparePassword = await bcrypt.compare(password, existEmail.password);
     if (!comparePassword) {
-      return res.status(401).json({
+      return res.json({
         message: "Incorrect password",
         success: false,
       });
     }
 
-    res.status(200).json({
+    res.json({
       message: "Login successful",
-      user: existEmail,
       success: true,
+      user: existEmail,
     });
   } catch (error) {
-    console.error("Error in Login Route:", error.message); 
-    res.status(500).json({
+    console.error("Error in Login Route:", error.message);
+    res.json({
       message: "Internal server error. Please try again later.",
       success: false,
     });

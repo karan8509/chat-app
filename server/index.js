@@ -1,7 +1,8 @@
 const express = require("express");
-const {authRoutes} = require("./src/Routes/User-Route");
+const { authRoutes } = require("./src/Routes/User-Route");
 const cors = require("cors");
 const Connection = require("./config/db");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
 
@@ -9,10 +10,13 @@ app.get("/", (req, res) => {
   res.json({ message: "Create a API  ", success: true });
 });
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173/", // ✅ frontend ka address
+  credentials: true,              // ✅ cookie allow karne ke liye
+}));
+app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
-
 
 const StartServer = async () => {
   try {
