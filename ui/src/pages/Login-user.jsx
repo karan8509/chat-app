@@ -21,6 +21,7 @@ const Login = ({setUser}) => {
       } , {withCredentials: true});
       localStorage.setItem("token" , user)
       setUser(user);
+      toast.success(message)
 
       if (!success) {
         toast.error(message);

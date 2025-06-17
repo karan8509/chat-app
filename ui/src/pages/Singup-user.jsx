@@ -29,10 +29,10 @@ const Singup = () => {
         toast.error(message);
         return
       }
-     <Navigate to="/login" />
+     toast.success(message)
     } catch (error) {
       console.log("error in Singup Routes in Frontend", error.message);
-      toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "Network Error");
     }
   };
 
