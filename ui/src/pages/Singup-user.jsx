@@ -1,13 +1,12 @@
 import axios from "axios";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 const Singup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const handleNameChange = (e) => setName(e.target.value);
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -23,17 +22,16 @@ const Singup = () => {
           email,
           password,
         },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
 
       if (!success) {
         toast.error(message);
+        return
       }
-      <Navigate to="" />;
+     <Navigate to="/login" />
     } catch (error) {
-      console.log("error in Singup Routes in Frontend");
+      console.log("error in Singup Routes in Frontend", error.message);
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };

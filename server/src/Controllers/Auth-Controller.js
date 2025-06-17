@@ -8,18 +8,18 @@ const signup = async (req, res) => {
     const { name, email, password } = req.body;
     console.log(" name , email  , password ", name, email, password);
 
-    const genretToken = (userID) => {
+    const storeRefreshToken = (userID) => {
       const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
         expiresIn: "3d",
       });
       return { Refrenshtoken };
     };
 
-    const cookieStoreData = (res, refreshToken) => {
+    const setcookies  = (res, refreshToken) => {
       res.cookie("token", refreshToken, {
         httpOnly: true,
         secure: false,
-        sameSite: "Strict",
+        sameSite: "Lax",
         maxAge: 2 * 24 * 60 * 60 * 1000,
       });
     };
@@ -35,8 +35,8 @@ const signup = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashPassword });
-    const { Refrenshtoken } = genretToken(user);
-    cookieStoreData(res, Refrenshtoken);
+    const { Refrenshtoken } = storeRefreshToken(user);
+    setcookies (res, Refrenshtoken);
     res.json({
       message: "Successfully Account Created",
       success: true,
@@ -53,6 +53,22 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
+
+   const storeRefreshToken = (userID) => {
+      const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
+        expiresIn: "3d",
+      });
+      return { Refrenshtoken };
+    };
+
+    const setcookies  = (res, refreshToken) => {
+      res.cookie("token", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+        maxAge: 2 * 24 * 60 * 60 * 1000,
+      });
+    };
   try {
     const { email, password } = req.body;
     const existEmail = await User.findOne({ email });
@@ -69,7 +85,8 @@ const login = async (req, res) => {
         success: false,
       });
     }
-
+   const { Refrenshtoken } = storeRefreshToken(existEmail._id);
+    setcookies (res, Refrenshtoken);
     res.json({
       message: "Login successful",
       success: true,

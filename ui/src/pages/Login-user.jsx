@@ -18,10 +18,10 @@ const Login = ({setUser}) => {
       } = await axios.post("http://localhost:8000/api/auth/login", {
         email,
         password,
-      });
+      } , {withCredentials: true});
+      localStorage.setItem("token" , user)
       setUser(user);
 
-      console.log(message, "<----");
       if (!success) {
         toast.error(message);
       }
