@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 let socket;
 
 function ChatComponent() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(" ");
   const [chat, setChat] = useState([]);
 
   useEffect(() => {

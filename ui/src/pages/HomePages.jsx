@@ -6,9 +6,7 @@ const HomePages = () => {
 
   return (
     <div className="bg-gray-900 h-screen text-white flex justify-center items-center relative">
-      {/* <div className="absolute top-5 text-2xl">
-        <i className="fas fa-home">j</i> 
-      </div> */}
+      
 
       <div className="flex flex-col items-center">
         {user ? (

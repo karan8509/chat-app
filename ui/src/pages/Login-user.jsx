@@ -29,8 +29,7 @@ const Login = ({setUser}) => {
     } catch (error) {
       console.log("error in login Routes", error.message);
       toast.error(error.message);
-    }
-  };
+    }  };
 
   return (
     <div className="flex justify-center items-center min-h-screen ">

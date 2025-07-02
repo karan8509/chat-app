@@ -16,12 +16,7 @@ const Singup = () => {
       const {
         data: { success, message },
       } = await axios.post(
-        "http://localhost:8000/api/auth/signup",
-        {
-          name,
-          email,
-          password,
-        },
+        "http://localhost:8000/api/auth/signup",  { name, email, password, },
         { withCredentials: true }
       );
 
