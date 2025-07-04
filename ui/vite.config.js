@@ -5,9 +5,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // server: {
-  //   host: "192.168.1.43", // 🔁 Yahan apna IP address daal do
-  //   port: 5173, // ✅ Port optional hai, default 5173 hota hai
-  //   open: true, // 🔓 Optional: browser khud open kare
-  // },
+  server: {
+    host: "192.168.1.42", // 🔁 Yahan apna IP address daal do
+    port: 5173, // ✅ Port optional hai, default 5173 hota hai
+    open: true, // 🔓 Optional: browser khud open kare
+  },
 });

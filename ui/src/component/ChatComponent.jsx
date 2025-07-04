@@ -8,7 +8,7 @@ function ChatComponent() {
   const [chat, setChat] = useState([]);
 
   useEffect(() => {
-    socket = io("http://localhost:8000", {
+    socket = io("http://192.168.1.42:8000", {
       withCredentials: true,
     });
 
