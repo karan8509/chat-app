@@ -4,6 +4,7 @@ This is a **real-time chat application** built using **React**, **Node.js**, **S
 
 ---
 
+
 ## 🚀 Features
 
 - 🔐 User Sign Up & Login (JWT-based)
