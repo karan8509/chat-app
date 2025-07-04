@@ -15,6 +15,6 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("user", UserSchema);
+const User = mongoose.model("userAuthChat-App", UserSchema);
 
 module.exports = User;
