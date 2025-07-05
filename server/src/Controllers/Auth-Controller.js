@@ -3,26 +3,26 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const storeRefreshToken = async (userID) => {
+  const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
+    expiresIn: "3d",
+  });
+  return { Refrenshtoken };
+};
+
+const setcookies = async (res, Refrenshtoken) => {
+  res.cookie("token", Refrenshtoken, {
+    httpOnly: false,
+    secure: false,
+    sameSite: "strict",
+    maxAge: 2 * 24 * 60 * 60 * 1000,
+  });
+};
+
 const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     console.log(" name , email  , password ", name, email, password);
-
-    const storeRefreshToken = (userID) => {
-      const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
-        expiresIn: "3d",
-      });
-      return { Refrenshtoken };
-    };
-
-    const setcookies  = (res, refreshToken) => {
-      res.cookie("token", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-      });
-    };
 
     // Check if email already exists in the database
     const existingUser = await User.findOne({ email });
@@ -35,8 +35,8 @@ const signup = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashPassword });
-    const { Refrenshtoken } = storeRefreshToken(user);
-    setcookies (res, Refrenshtoken);
+    const { Refrenshtoken } = await storeRefreshToken(user._id);
+    await setcookies(res, Refrenshtoken);
     res.json({
       message: "Successfully Account Created",
       success: true,
@@ -53,22 +53,21 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
+  const storeRefreshToken = (userID) => {
+    const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
+      expiresIn: "3d",
+    });
+    return { Refrenshtoken };
+  };
 
-   const storeRefreshToken = (userID) => {
-      const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
-        expiresIn: "3d",
-      });
-      return { Refrenshtoken };
-    };
-
-    const setcookies  = (res, refreshToken) => {
-      res.cookie("token", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "Lax",
-        maxAge: 2 * 24 * 60 * 60 * 1000,
-      });
-    };
+  const setcookies = (res, refreshToken) => {
+    res.cookie("token", refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 2 * 24 * 60 * 60 * 1000,
+    });
+  };
   try {
     const { email, password } = req.body;
     const existEmail = await User.findOne({ email });
@@ -85,8 +84,8 @@ const login = async (req, res) => {
         success: false,
       });
     }
-   const { Refrenshtoken } = storeRefreshToken(existEmail._id);
-    setcookies (res, Refrenshtoken);
+    const { Refrenshtoken } = storeRefreshToken(existEmail._id);
+    setcookies(res, Refrenshtoken);
     res.json({
       message: "Login successful",
       success: true,

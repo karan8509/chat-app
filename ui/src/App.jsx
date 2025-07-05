@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { NavLink, Route, Routes, useNavigate } from "react-router-dom";
 import HomePages from "./pages/HomePages";
-import Singup from "./pages/Singup-user";
+import SingupPages from "./pages/Singup-user";
 import Login from "./pages/Login-user";
 import { ToggleLeft, User } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 import ChatComponent from "./component/ChatComponent";
+import { useBearStore } from "./store/auth";
 
 const App = () => {
-  const [user, setUser] = useState();
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log(token);
-    if (token) {
-      setUser(true); // Ya decoded ID set karo if needed
-    }
-  }, []);
+  const { user } = useBearStore();
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    navigate("/message")
+  } , [user])
 
   return (
     <div className="bg-gray-900 h-screen text-white flex justify-center items-center relative">
@@ -26,20 +25,18 @@ const App = () => {
           }}
         />
       </div>
-      {/* <Routes>
-        {/* <Route path="/" element={<HomePages />} />
-        <Route index element={<Singup />} />
+      <Routes>
+        <Route path="/" element={<HomePages />} />
+        <Route path="/message" element={<ChatComponent />} />
         <Route
-          path="/login"
-          element={user ? <ChatComponent /> : <Login setUser={setUser} />}
-        /> */}
-      
-      {/* </Routes>  */}
-      <ChatComponent />
+          index
+          element={user ? <ChatComponent /> : <SingupPages />}
+        />
+        <Route path="/login" element={<Login />} />
+      </Routes>
       <Toaster />
     </div>
   );
 };
 
 export default App;
-

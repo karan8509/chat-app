@@ -1,33 +1,31 @@
-import axios from "axios";
 import { useState } from "react";
-import { NavLink, Navigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useBearStore } from "../store/auth";
 
-const Singup = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const handleNameChange = (e) => setName(e.target.value);
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
+const SingupPages = () => {
+  const { Singup } = useBearStore();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevent) => ({
+      ...prevent,
+      [name]: value,
+    }));
+  };
+
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      const {
-        data: { success, message },
-      } = await axios.post(
-        "http://localhost:8000/api/auth/signup",  { name, email, password, },
-        { withCredentials: true }
-      );
-
-      if (!success) {
-        toast.error(message);
-        return
-      }
-     toast.success(message)
+      await Singup(formData);
     } catch (error) {
-      console.log("error in Singup Routes in Frontend", error.message);
-      toast.error(error.response?.data?.message || "Network Error");
+      toast.error(error.message);
     }
   };
 
@@ -48,8 +46,9 @@ const Singup = () => {
             <input
               type="text"
               id="name"
-              value={name}
-              onChange={handleNameChange}
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
               className="mt-1 p-3 w-[250px] border-2 border-gray-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Your name"
             />
@@ -65,8 +64,9 @@ const Singup = () => {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={handleEmailChange}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               className="mt-1 p-3 w-[250px] border-2 border-gray-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Your email"
             />
@@ -82,8 +82,9 @@ const Singup = () => {
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={handlePasswordChange}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               className="mt-1 p-3 w-[250px] border-2 border-gray-500 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Your password"
             />
@@ -106,4 +107,4 @@ const Singup = () => {
   );
 };
 
-export default Singup;
+export default SingupPages;
