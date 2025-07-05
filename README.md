@@ -5,6 +5,7 @@ This is a **real-time chat application** built using **React**, **Node.js**, **S
 ---
 
 
+
 ## 🚀 Features
 
 - 🔐 User Sign Up & Login (JWT-based)
@@ -16,7 +17,7 @@ This is a **real-time chat application** built using **React**, **Node.js**, **S
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stackw
 
 | Frontend | Backend | Real-Time | Database |
 |----------|---------|-----------|----------|
