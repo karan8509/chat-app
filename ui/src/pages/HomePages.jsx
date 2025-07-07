@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 
 const HomePages = () => {
   const user = true; 
-
   return (
     <div className="bg-gray-900 h-screen text-white flex justify-center items-center relative">
       

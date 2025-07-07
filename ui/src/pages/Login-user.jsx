@@ -26,6 +26,7 @@ const Login = ({setUser}) => {
       if (!success) {
         toast.error(message);
       }
+      
     } catch (error) {
       console.log("error in login Routes", error.message);
       toast.error(error.message);

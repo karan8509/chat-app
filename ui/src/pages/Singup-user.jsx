@@ -57,8 +57,7 @@ const SingupPages = () => {
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-300"
-            >
+              className="block text-sm font-medium text-gray-300" >
               Email
             </label>
             <input
