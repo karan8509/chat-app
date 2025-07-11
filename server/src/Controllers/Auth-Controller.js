@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const storeRefreshToken = async (userID) => {
   const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
-    expiresIn: "3d",
+    expiresIn: "7d",
   });
   return { Refrenshtoken };
 };
@@ -23,8 +23,6 @@ const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     console.log(" name , email  , password ", name, email, password);
-
-    // Check if email already exists in the database
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({
@@ -37,6 +35,8 @@ const signup = async (req, res) => {
     const user = await User.create({ name, email, password: hashPassword });
     const { Refrenshtoken } = await storeRefreshToken(user._id);
     await setcookies(res, Refrenshtoken);
+    const token  = req.cookies.token;
+    console.log("token--->" , token)
     res.json({
       message: "Successfully Account Created",
       success: true,
@@ -53,22 +53,7 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const storeRefreshToken = (userID) => {
-    const Refrenshtoken = jwt.sign({ userID }, process.env.SECRET_TOKEN_KEY, {
-      expiresIn: "3d",
-    });
-    return { Refrenshtoken };
-  };
-
-  const setcookies = (res, refreshToken) => {
-    res.cookie("token", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "Lax",
-      maxAge: 2 * 24 * 60 * 60 * 1000,
-    });
-  };
-  try {
+   try {
     const { email, password } = req.body;
     const existEmail = await User.findOne({ email });
     if (!existEmail) {
@@ -86,6 +71,8 @@ const login = async (req, res) => {
     }
     const { Refrenshtoken } = storeRefreshToken(existEmail._id);
     setcookies(res, Refrenshtoken);
+  const token = req.cookies.token;
+  console.log("new one token again " , token)
     res.json({
       message: "Login successful",
       success: true,
@@ -100,4 +87,16 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+const  getProfile = async (req,res) => {
+  try {
+    const user = req.user
+     res.json(user)
+  } catch (error) {
+     res.json(error.message)
+  }
+}
+
+
+
+module.exports = { signup, login  , getProfile};
+
